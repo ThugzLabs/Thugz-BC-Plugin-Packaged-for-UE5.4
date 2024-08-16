@@ -420,4 +420,172 @@ FString UThugzBCBPLibrary::GetLastTokenJsonResponse()
 }
 
 
+//////////////////////////////////CREATION WALLET SOLANA avec SODIUM////////////////////////////////////////////////////////////////////////////////////////////////
+void UThugzBCBPLibrary::GenerateSolanaKeyPair(FString& OutPublicKey, FString& OutPrivateKey)
+{
+    if (sodium_init() < 0)
+    {
+        // L'initialisation a échoué
+        UE_LOG(LogTemp, Error, TEXT("Libsodium initialization failed!"));
+        return;
+    }
+    else
+    {
+        UE_LOG(LogTemp, Log, TEXT("Libsodium initialization succeeded."));
+    }
 
+    unsigned char publicKey[crypto_sign_PUBLICKEYBYTES];
+    unsigned char privateKey[crypto_sign_SECRETKEYBYTES];
+
+    // Générer une paire de clés
+    crypto_sign_keypair(publicKey, privateKey);
+
+    // Convertir les clés en chaînes hexadécimales
+    OutPublicKey = BytesToHex(publicKey, crypto_sign_PUBLICKEYBYTES);
+    OutPrivateKey = BytesToHex(privateKey, crypto_sign_SECRETKEYBYTES);
+}
+
+FString UThugzBCBPLibrary::BytesToHex(const unsigned char* Bytes, int32 Length)
+{
+    FString HexString;
+    for (int32 i = 0; i < Length; i++)
+    {
+        HexString += FString::Printf(TEXT("%02x"), Bytes[i]);
+    }
+    return HexString;
+}
+const FString Base58Alphabet = TEXT("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz");
+
+FString UThugzBCBPLibrary::EncodeBase58(const TArray<uint8>& Data)
+{
+    int32 length = Data.Num();
+    TArray<int32> digits;
+    digits.Add(0);
+
+    for (int32 i = 0; i < length; ++i)
+    {
+        int carry = Data[i];
+        for (int32 j = 0; j < digits.Num(); ++j)
+        {
+            carry += digits[j] << 8;
+            digits[j] = carry % 58;
+            carry /= 58;
+        }
+        while (carry)
+        {
+            digits.Add(carry % 58);
+            carry /= 58;
+        }
+    }
+
+    FString encoded;
+    for (int32 k = digits.Num() - 1; k >= 0; --k)
+    {
+        encoded += Base58Alphabet[digits[k]];
+    }
+
+    for (int32 i = 0; i < length && Data[i] == 0; ++i)
+    {
+        encoded = TEXT("1") + encoded;
+    }
+
+    return encoded;
+}
+
+TArray<uint8> UThugzBCBPLibrary::DecodeBase58(const FString& Base58String)
+{
+    int32 length = Base58String.Len();
+    TArray<int32> digits;
+    digits.Add(0);
+
+    for (int32 i = 0; i < length; ++i)
+    {
+        TCHAR c = Base58String[i];
+        int32 carry;
+        if (!Base58Alphabet.FindChar(c, carry))
+        {
+            // Handle invalid character in Base58 string
+            return TArray<uint8>();
+        }
+
+        for (int32 j = 0; j < digits.Num(); ++j)
+        {
+            carry += digits[j] * 58;
+            digits[j] = carry & 0xFF;
+            carry >>= 8;
+        }
+        while (carry)
+        {
+            digits.Add(carry & 0xFF);
+            carry >>= 8;
+        }
+    }
+
+    TArray<uint8> decoded;
+    for (int32 k = digits.Num() - 1; k >= 0; --k)
+    {
+        decoded.Add(static_cast<uint8>(digits[k]));
+    }
+
+    for (int32 i = 0; i < length && Base58String[i] == TEXT('1'); ++i)
+    {
+        decoded.Insert(0, 0);
+    }
+
+    return decoded;
+}
+TArray<uint8> UThugzBCBPLibrary::HexToBytes(const FString& HexString)
+{
+    TArray<uint8> Bytes;
+    int32 Length = HexString.Len();
+
+    for (int32 i = 0; i < Length; i += 2)
+    {
+        FString ByteString = HexString.Mid(i, 2);
+        uint8 Byte = FParse::HexDigit(ByteString[0]) * 16 + FParse::HexDigit(ByteString[1]);
+        Bytes.Add(Byte);
+    }
+
+    return Bytes;
+}
+
+
+//////////////////////////////////IMPORT WALLET SOLANA avec SODIUM////////////////////////////////////////////////////////////////////////////////////////////////
+FString UThugzBCBPLibrary::GetSolanaAddressFromPrivateKey(const FString& PrivateKey, FString& PublicKeyHex)
+{
+    // Assurez-vous que libsodium est initialisé
+    static bool bSodiumInitialized = false;
+    if (!bSodiumInitialized) {
+        if (sodium_init() == -1) {
+            UE_LOG(LogTemp, Error, TEXT("Failed to initialize libsodium"));
+            return "";
+        }
+        bSodiumInitialized = true;
+    }
+
+    // Convertir la clé privée de Base58 à TArray<uint8>
+    TArray<uint8> PrivateKeyArray = DecodeBase58(PrivateKey);
+
+    // Vérifier la longueur de la clé privée
+    if (PrivateKeyArray.Num() != crypto_sign_SECRETKEYBYTES) {
+        UE_LOG(LogTemp, Error, TEXT("Invalid private key length: %d"), PrivateKeyArray.Num());
+        return "";
+    }
+
+    // Générer la clé publique à partir de la clé privée
+    uint8 PublicKey[crypto_sign_PUBLICKEYBYTES];
+    crypto_sign_ed25519_sk_to_pk(PublicKey, PrivateKeyArray.GetData());
+
+    // Convertir la clé publique en chaîne hexadécimale pour vérification
+    PublicKeyHex = BytesToHex(PublicKey, crypto_sign_PUBLICKEYBYTES);
+
+    // Convertir la clé publique en chaîne de caractères Base58 pour obtenir l'adresse Solana
+    TArray<uint8> PublicKeyArray;
+    PublicKeyArray.Append(PublicKey, crypto_sign_PUBLICKEYBYTES);
+    FString PublicKeyBase58 = EncodeBase58(PublicKeyArray);
+
+    UE_LOG(LogTemp, Log, TEXT("Public Key (Hex): %s"), *PublicKeyHex);
+    UE_LOG(LogTemp, Log, TEXT("Public Key (Base58): %s"), *PublicKeyBase58);
+
+    return PublicKeyBase58;
+}

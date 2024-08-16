@@ -21,9 +21,7 @@
 			"LoadingPhase": "PreLoadingScreen",
 			"PlatformAllowList": [
 				"Win64",
-				"Android",
-				"IOS",
-				"Linux"
+				"Android"
 			]
 		}
 	]

@@ -17,6 +17,7 @@
 #include "IImageWrapper.h"
 #include "IImageWrapperModule.h"
 #include "Misc/Paths.h"
+#include "../../ThirdParty/libsodium/include/sodium.h"
 #include "ThugzBCfor53BPLibrary.generated.h"
 
 class FJsonObject;
@@ -233,6 +234,23 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
     static void DownloadImageAndCreateTexture(const FString& URL, UTexture2D*& OutTexture);
 
+    // Ajout de la fonction pour générer une paire de clés Solana
+    UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
+    static void GenerateSolanaKeyPair(FString& OutPublicKey, FString& OutPrivateKey);
+
+    //Encodage de l'adresse publique Solana en base 58
+    UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
+    static FString EncodeBase58(const TArray<uint8>& Data);
+    UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
+    static TArray<uint8> DecodeBase58(const FString& Base58String);
+    UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
+    static TArray<uint8> HexToBytes(const FString& HexString);
+
+    //Récuperation de l'adresse publique SOlana depuis la clé privée
+    UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
+    static FString GetSolanaAddressFromPrivateKey(const FString& PrivateKey, FString& PublicKeyHex);
+
+
 private:
     static FString LastJsonResponse;
 
@@ -243,6 +261,7 @@ private:
     static void OnImageDownloaded(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful, UTexture2D** OutTexture);
     static UTexture2D* CreateTextureFromImageData(const TArray<uint8>& ImageData);
 
+    static FString BytesToHex(const unsigned char* Bytes, int32 Length);
 
 };
 

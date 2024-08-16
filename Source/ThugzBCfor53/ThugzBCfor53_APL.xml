@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root xmlns:android="http://schemas.android.com/apk/res/android">
+    <resourceCopies>
+        <log text="Copying libsodium.so files for Android"/>
+        <!-- Staging the .so files for each architecture -->
+        <copyFile src="$S(AbsPluginDir)/../ThirdParty/libsodium/lib/Android/armeabi-v7a/libsodium.so"
+                  dst="$S(BuildDir)/libs/armeabi-v7a/libsodium.so" />
+        <copyFile src="$S(AbsPluginDir)/../ThirdParty/libsodium/lib/Android/arm64-v8a/libsodium.so"
+                  dst="$S(BuildDir)/libs/arm64-v8a/libsodium.so" />
+        <copyFile src="$S(AbsPluginDir)/../ThirdParty/libsodium/lib/Android/x86/libsodium.so"
+                  dst="$S(BuildDir)/libs/x86/libsodium.so" />
+        <copyFile src="$S(AbsPluginDir)/../ThirdParty/libsodium/lib/Android/x86_64/libsodium.so"
+                  dst="$S(BuildDir)/libs/x86_64/libsodium.so" />
+    </resourceCopies>
+</root>
