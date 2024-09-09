@@ -6,13 +6,12 @@
 	"Description": "Interact with the BlockChain in your web 3 games",
 	"Category": "Other",
 	"CreatedBy": "Thugz Labs SAS",
-	"CreatedByURL": "https://www.thugz.life/",
+	"CreatedByURL": "https://thugz-labs.com",
 	"DocsURL": "",
 	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/6ff5398dba6341ac94b8a0fd56cbce1b",
 	"SupportURL": "",
 	"EngineVersion": "5.4.0",
 	"CanContainContent": true,
-	"IsBetaVersion": true,
 	"Installed": true,
 	"Modules": [
 		{
@@ -21,7 +20,8 @@
 			"LoadingPhase": "PreLoadingScreen",
 			"PlatformAllowList": [
 				"Win64",
-				"Android"
+				"Android",
+				"Linux"
 			]
 		}
 	]
