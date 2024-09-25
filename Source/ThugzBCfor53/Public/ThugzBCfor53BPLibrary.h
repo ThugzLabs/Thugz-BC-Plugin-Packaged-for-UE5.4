@@ -79,7 +79,6 @@ struct FNFTData
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
     FMetadataJson MetadataJson;
 
-    // Ajouter les autres champs selon le JSON
 };
 
 USTRUCT(BlueprintType)
@@ -90,7 +89,7 @@ struct FRootJson
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
     TArray<FNFTData> Data;
 };
-//////////////////STRUCTURE POUR SOLANA HELLOMOON/////////////////////////////////
+//////////////////END STRUCTURE POUR SOLANA HELLOMOON/////////////////////////////////
 
 
 
@@ -184,11 +183,77 @@ struct FEVMFNFTResponse
     TArray<FEVMFNFTData> Result;
 
 };
+//////////////////END STRUCTURE POUR EVM MORALIS/////////////////////////////////
+
+//////////////////STRUCTURE POUR SOLANA MORALIS/////////////////////////////////
+USTRUCT(BlueprintType)
+struct FThugzNFTData
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
+    FString AssociatedTokenAddress;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
+    FString Mint;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
+    FString Name;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
+    FString Symbol;
+};
+
+USTRUCT(BlueprintType)
+struct FSolMoralisMetaplex
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
+    FString MetadataUri;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
+    FString UpdateAuthority;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
+    int32 SellerFeeBasisPoints;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
+    int32 PrimarySaleHappened;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
+    bool IsMutable;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
+    bool MasterEdition;
+};
+
+USTRUCT(BlueprintType)
+struct FSolMoralisNFTMetadata
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
+    FString Mint;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
+    FString Standard;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
+    FString Name;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
+    FString Symbol;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thugz Labs JSON")
+    FSolMoralisMetaplex Metaplex;
+};
+
+//////////////////END STRUCTURE POUR SOLANA MORALIS/////////////////////////////////
 
 
-//////////////////STRUCTURE POUR EVM MORALIS/////////////////////////////////
 
-// Définition des fonctions Blueprint
+// Définition des fonctions pour exposition au Blueprint / Defining functions for Blueprint exposure
 UCLASS()
 class UThugzBCBPLibrary : public UBlueprintFunctionLibrary
 {
@@ -234,11 +299,11 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
     static void DownloadImageAndCreateTexture(const FString& URL, UTexture2D*& OutTexture);
 
-    // Ajout de la fonction pour générer une paire de clés Solana
+    // Ajout de la fonction pour générer une paire de clés Solana / Addition of the function for generating a pair of Solana keys
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
     static void GenerateSolanaKeyPair(FString& OutPublicKey, FString& OutPrivateKey);
 
-    //Encodage de l'adresse publique Solana en base 58
+    //Code base 58 pour encodage et decodage 58 + Hexadecimal vers Bytes / Base 58 code for encoding and decoding 58 + Hexadecimal to Bytes
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
     static FString EncodeBase58(const TArray<uint8>& Data);
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
@@ -246,9 +311,23 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
     static TArray<uint8> HexToBytes(const FString& HexString);
 
-    //Récuperation de l'adresse publique SOlana depuis la clé privée
+    //Récuperation de l'adresse publique SOlana depuis la clé privée / Retrieving the SOlana public address from the private key
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
-    static FString GetSolanaAddressFromPrivateKey(const FString& PrivateKey, FString& PublicKeyHex);
+    static void GetSolanaAddressFromPrivateKey(const FString& PrivateKey, FString& PublicKeyHex, FString& PublicKeyBase58);
+
+    //Requête Moralis pour récupérer les NFTs d'un wallet / Moralis request to retrieve NFTs from a wallet
+    UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
+    static void MakeMoralisAPIRequest(const FString& OwnerAccount, const FString& APIKey);
+    //Parsing de la réponse de la requête Moralis / Parsing the response to the Moralis request
+    UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
+    static TArray<FThugzNFTData> ParseNFTDataFromMoralisJSON(const FString& JsonString);
+    //Requête pour récuperer les metadata d'un NFT par Moralis / Request to retrieve the metadata of an NFT by Moralis
+    UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
+    static void MakeMoralisNFTMetadataRequest(const FString& NFTMintAddress, const FString& APIKey);
+    //Requête pour parser la réponse de la fonction: MakeMoralisNFTMetadataRequest / Request to parse the function response: MakeMoralisNFTMetadataRequest
+    UFUNCTION(BlueprintCallable, Category = "JSON Parsing")
+    static FSolMoralisNFTMetadata ParseNFTMetadataFromJSON(const FString& JsonString);
+
 
 
 private:

@@ -14,10 +14,10 @@ FString UThugzBCBPLibrary::LastTokenBalance = FString("");
 
 /////////////////////////////////////////////////////////////HELLOMOON//////////////////////////////////////////////////////////////////////////////
 
-// requête pour HelloMoon API
+// This request use the HelloMoon API to retrieve the NFTs owned by the Account. Barear is the hellomoon barear / Cette requête utilise l'API de HelloMoon pour récupérer les NFT appartenant au compte. Barear est le barear de hellomoon
 void UThugzBCBPLibrary::MakeHelloMoonAPIRequest(const FString& Account, const FString& Barear)
 {
-    FString HelloMoonURL = TEXT("https://rest-api.hellomoon.io/v0/nft/mints-by-owner"); // Remplacez par l'URL de votre endpoint HelloMoon
+    FString HelloMoonURL = TEXT("https://rest-api.hellomoon.io/v0/nft/mints-by-owner"); // It is the mint-by-owner method from the HelloMoon API
 
     TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = FHttpModule::Get().CreateRequest();
 
@@ -26,7 +26,6 @@ void UThugzBCBPLibrary::MakeHelloMoonAPIRequest(const FString& Account, const FS
     HttpRequest->SetHeader(TEXT("Accept"), TEXT("application/json"));
     HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
     HttpRequest->SetHeader(TEXT("Authorization"), FString::Printf(TEXT("Bearer %s"), *Barear));
-    //HttpRequest->SetHeader(TEXT("Authorization"), TEXT("Bearer 84fc727a-66fd-4f4c-a723-17adb50ce7ca"));
 
     FString JsonPayload = FString::Printf(TEXT("{\"ownerAccount\":\"%s\"}"), *Account);
     HttpRequest->SetContentAsString(JsonPayload);
@@ -36,7 +35,7 @@ void UThugzBCBPLibrary::MakeHelloMoonAPIRequest(const FString& Account, const FS
     HttpRequest->ProcessRequest();
 }
 
-//Requete pour récupérer l'URI de hellomoon
+//Requete pour récupérer l'URI de hellomoon / This request retrieve the URI from the NFT metadata
 void UThugzBCBPLibrary::MakeURIRequest(const FString& URL)
 {
     TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
@@ -46,6 +45,7 @@ void UThugzBCBPLibrary::MakeURIRequest(const FString& URL)
     Request->SetHeader("Content-Type", "application/json");
     Request->ProcessRequest();
 }
+//This request retrieve the URL of the NFT image / Cette requête permet de récupérer l'URL de l'image NFT
 bool UThugzBCBPLibrary::ParseImageURL(const FString& JsonString, FString& OutImageURL)
 {
     LastJsonResponse = JsonString; // Store the raw JSON response
@@ -72,7 +72,7 @@ bool UThugzBCBPLibrary::ParseImageURL(const FString& JsonString, FString& OutIma
 
     return false;
 }
-//Récuperation de l'image et creation de la texture depuis l'URL obtenu par ParseImageURL
+//Récuperation de l'image et creation de la texture depuis l'URL obtenu par ParseImageURL / Retrieve the image and create the texture from the URL obtained by ParseImageURL
 void UThugzBCBPLibrary::DownloadImageAndCreateTexture(const FString& URL, UTexture2D*& OutTexture)
 {
     TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
@@ -143,35 +143,7 @@ UTexture2D* UThugzBCBPLibrary::CreateTextureFromImageData(const TArray<uint8>& I
     return nullptr;
 }
 
-
-// Traitement de la requête pour les API NFT (HelloMoon ou Moralis)
-void UThugzBCBPLibrary::HandleHelloMoonAPIResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
-{
-    if (!bWasSuccessful)
-    {
-        // Gérer l'erreur de la requête ici
-        LastJsonResponse = FString(""); // Réinitialisez la réponse JSON en cas d'erreur
-        return;
-    }
-
-    if (Response.IsValid() && Response->GetResponseCode() == 200)
-    {
-        FString JsonResponse = Response->GetContentAsString();
-        LastJsonResponse = JsonResponse; // Stockez la réponse JSON
-
-        // Vous pouvez maintenant utiliser JsonResponse qui contient la réponse JSON
-
-        // Par exemple, vous pouvez désérialiser la chaîne JSON en une structure Unreal Engine
-    }
-    else
-    {
-        // Gérer l'erreur de réponse HTTP ici
-        LastJsonResponse = FString("ERREUR"); // Réinitialisez la réponse JSON en cas d'erreur
-    }
-
-}
-
-//Parsing en structure UE du JSON de HelloMoon API
+//Parsing en structure UE du JSON de HelloMoon API / Parsing en structure UE du JSON de HelloMoon API
 FRootJson UThugzBCBPLibrary::ConvertSOLJSONtoStruct(FString JsonString)
 {
 
@@ -223,7 +195,7 @@ FRootJson UThugzBCBPLibrary::ConvertSOLJSONtoStruct(FString JsonString)
 }
 
 
-//Balance Solana avec Hellomoon
+//récupération de la Balance Solana avec Hellomoon / recovery of the Solana Scale with Hellomoon
 
 void UThugzBCBPLibrary::HelloMoonRequestForTokenBalance(const FString& Param, const FString& ApiKey, FString& OutResponse)
 {
@@ -266,7 +238,7 @@ void UThugzBCBPLibrary::HelloMoonRequestForTokenBalance(const FString& Param, co
     HttpRequest->ProcessRequest();
 }
 
-//Requête récuperant la repons eJSON de getbalance d'HelloMoon pour la mettre dans un double en sortie
+//Requête récuperant la repons eJSON de getbalance d'HelloMoon pour la mettre dans un double en sortie / Request to retrieve HelloMoon's getbalance eJSON response and put it in an output double
 void UThugzBCBPLibrary::GetTokenBamanceFromJsonHelloMoon(const FString& JsonString, double& OutValue)
 {
     TSharedPtr<FJsonObject> JsonObject;
@@ -287,7 +259,7 @@ void UThugzBCBPLibrary::GetTokenBamanceFromJsonHelloMoon(const FString& JsonStri
 
 
 ////////////////////////////////////////////////////////MORALIS//////////////////////////////////////////////////////////////////////////////////////
-// 
+                                                // EVM BLOCKCHAIN//
 // requête pour Moralis API
 void UThugzBCBPLibrary::MoralisAPIRequest(const FString& AccountAddress, const FString& ApiKey, const FString& Blockchain) {
 
@@ -365,7 +337,8 @@ FEVMFNFTResponse UThugzBCBPLibrary::ConvertEVMJSONtoStruct(FString JsonString)
     }
     return NFTResponse;
 }
-// Récupération du JSON de la balance Solana avec MORALIS
+// SOLANA BLOCKCHAIN//
+// Récupération du JSON de la balance Solana avec MORALIS /  Retrieving JSON from Solana scales with MORALIS
 void UThugzBCBPLibrary::MakeMoraliseRequestForSOLBalance(const FString& Pkey, const FString& ApiKey, FString& OutResponse)
 {
     FString Url = FString::Printf(TEXT("https://solana-gateway.moralis.io/account/mainnet/%s/balance"), *Pkey);
@@ -390,7 +363,7 @@ void UThugzBCBPLibrary::MakeMoraliseRequestForSOLBalance(const FString& Pkey, co
     Request->ProcessRequest();
 }
 
-//Requête récuperant la reponse JSON de la requête MORALIS pour la mettre dans un double en sortie
+//Requête récuperant la reponse JSON de la requête balance solana MORALIS pour la mettre dans un double en sortie / Query that retrieves the JSON response from the MORALIS  Solana balance query and puts it in a duplicate output file
 void UThugzBCBPLibrary::GetTokenBamanceFromJsonMoralis(const FString& JsonString, double& OutSolanaValue)
 {
     TSharedPtr<FJsonObject> JsonObject;
@@ -406,9 +379,98 @@ void UThugzBCBPLibrary::GetTokenBamanceFromJsonMoralis(const FString& JsonString
     }
 }
 
+//Requête récupérant les NFT possédés d'un Wallet SOLANA dans un JSON / Request to retrieve the NFTs owned by a SOLANA Wallet in a JSON
+void UThugzBCBPLibrary::MakeMoralisAPIRequest(const FString& OwnerAccount, const FString& APIKey)
+{
+    FString MoralisURL = FString::Printf(TEXT("https://solana-gateway.moralis.io/account/mainnet/%s/nft"), *OwnerAccount);
+
+    TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = FHttpModule::Get().CreateRequest();
+
+    HttpRequest->SetVerb(TEXT("GET"));
+    HttpRequest->SetURL(MoralisURL);
+    HttpRequest->SetHeader(TEXT("Accept"), TEXT("application/json"));
+    HttpRequest->SetHeader(TEXT("X-API-Key"), APIKey);
+
+    HttpRequest->OnProcessRequestComplete().BindStatic(&UThugzBCBPLibrary::HandleHelloMoonAPIResponse);
+
+    HttpRequest->ProcessRequest();
+}
+//Parsing de la réponse JSON de la requête MakeMoralisAPIRequest dans une strcture adaptée / Parsing the JSON response to the MakeMoralisAPIRequest request into an adapted structure
+TArray<FThugzNFTData> UThugzBCBPLibrary::ParseNFTDataFromMoralisJSON(const FString& JsonString)
+{
+    TArray<FThugzNFTData> NFTDataArray;
+
+    // Create a JSON Reader
+    TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
+
+    // Declare a JSON object to hold the parsed data
+    TArray<TSharedPtr<FJsonValue>> ParsedJson;
+    if (FJsonSerializer::Deserialize(Reader, ParsedJson))
+    {
+        for (auto& Item : ParsedJson)
+        {
+            TSharedPtr<FJsonObject> JsonObject = Item->AsObject();
+
+            FThugzNFTData NFTData;
+            NFTData.AssociatedTokenAddress = JsonObject->GetStringField(TEXT("associatedTokenAddress"));
+            NFTData.Mint = JsonObject->GetStringField(TEXT("mint"));
+            NFTData.Name = JsonObject->GetStringField(TEXT("name"));
+            NFTData.Symbol = JsonObject->GetStringField(TEXT("symbol"));
+
+            NFTDataArray.Add(NFTData);
+        }
+    }
+
+    return NFTDataArray;
+}
+//Requête récuperant les Metaddata d'un NFT donné / Request to retrieve Metaddata for a given NFT
+void UThugzBCBPLibrary::MakeMoralisNFTMetadataRequest(const FString& NFTMintAddress, const FString& APIKey)
+{
+    FString MoralisURL = FString::Printf(TEXT("https://solana-gateway.moralis.io/nft/mainnet/%s/metadata"), *NFTMintAddress);
+
+    TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = FHttpModule::Get().CreateRequest();
+
+    HttpRequest->SetVerb(TEXT("GET"));
+    HttpRequest->SetURL(MoralisURL);
+    HttpRequest->SetHeader(TEXT("Accept"), TEXT("application/json"));
+    HttpRequest->SetHeader(TEXT("X-API-Key"), APIKey);
+
+    // Bind the request to handle the response
+    HttpRequest->OnProcessRequestComplete().BindStatic(&UThugzBCBPLibrary::HandleHelloMoonAPIResponse);
+
+    // Send the request
+    HttpRequest->ProcessRequest();
+}
+//Parsing de la réponse JSON de la requête MakeMoralisNFTMetadataRequest dans une strcture adaptée / Parsing the JSON response to the MakeMoralisNFTMetadataRequest into a suitable structure
+FSolMoralisNFTMetadata UThugzBCBPLibrary::ParseNFTMetadataFromJSON(const FString& JsonString)
+{
+    FSolMoralisNFTMetadata NFTMetadata;
+
+    TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
+
+    TSharedPtr<FJsonObject> JsonObject;
+    if (FJsonSerializer::Deserialize(Reader, JsonObject) && JsonObject.IsValid())
+    {
+        NFTMetadata.Mint = JsonObject->GetStringField(TEXT("mint"));
+        NFTMetadata.Standard = JsonObject->GetStringField(TEXT("standard"));
+        NFTMetadata.Name = JsonObject->GetStringField(TEXT("name"));
+        NFTMetadata.Symbol = JsonObject->GetStringField(TEXT("symbol"));
+
+        TSharedPtr<FJsonObject> MetaplexObject = JsonObject->GetObjectField(TEXT("metaplex"));
+        NFTMetadata.Metaplex.MetadataUri = MetaplexObject->GetStringField(TEXT("metadataUri"));
+        NFTMetadata.Metaplex.UpdateAuthority = MetaplexObject->GetStringField(TEXT("updateAuthority"));
+        NFTMetadata.Metaplex.SellerFeeBasisPoints = MetaplexObject->GetIntegerField(TEXT("sellerFeeBasisPoints"));
+        NFTMetadata.Metaplex.PrimarySaleHappened = MetaplexObject->GetIntegerField(TEXT("primarySaleHappened"));
+        NFTMetadata.Metaplex.IsMutable = MetaplexObject->GetBoolField(TEXT("isMutable"));
+        NFTMetadata.Metaplex.MasterEdition = MetaplexObject->GetBoolField(TEXT("masterEdition"));
+    }
+
+    return NFTMetadata;
+}
+
 ////////////////////////////////////////////////////////////////TRANSVERSE/////////////////////////////////////////////////////////////////////////////////
 
-//requête récupéant la réponse de n'importe quel API pour la mettre dans un FSTRING à parser
+//requête récupéant la réponse de n'importe quel API pour la mettre dans un FSTRING à parser / request to retrieve the response from any API and put it in a FSTRING to be parsed
 FString UThugzBCBPLibrary::GetLastJsonResponse()
 {
     return LastJsonResponse;
@@ -418,14 +480,37 @@ FString UThugzBCBPLibrary::GetLastTokenJsonResponse()
 {
     return LastTokenBalance;
 }
+// Traitement de la requête pour les API NFT (HelloMoon ou Moralis) / Request processing for NFT APIs (HelloMoon or Moralis)
+void UThugzBCBPLibrary::HandleHelloMoonAPIResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
+{
+    //LastJsonResponse = FString(""); //On commence par vider la dernière réponse eventuelle / Start by clearing the last possible answer
+    if (!bWasSuccessful)
+    {
+        LastJsonResponse = FString(""); // Réinitialisez la réponse JSON en cas d'erreur / Reset the JSON response in the event of an error
+        return;
+    }
+
+    if (Response.IsValid() && Response->GetResponseCode() == 200)
+    {
+        FString JsonResponse = Response->GetContentAsString();
+        LastJsonResponse = JsonResponse; // Stockez la réponse JSON / Store the JSON response
+
+    }
+    else
+    {
+        // Gestion de l'erreur de réponse HTTP / HTTP response error handling
+        LastJsonResponse = FString("ERREUR"); // Réinitialisez la réponse JSON en cas d'erreur / Reset the JSON response in the event of an error
+    }
+
+}
 
 
-//////////////////////////////////CREATION WALLET SOLANA avec SODIUM////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////CREATION WALLET SOLANA avec/with SODIUM////////////////////////////////////////////////////////////////////////////////////////////////
 void UThugzBCBPLibrary::GenerateSolanaKeyPair(FString& OutPublicKey, FString& OutPrivateKey)
 {
     if (sodium_init() < 0)
     {
-        // L'initialisation a échoué
+        // L'initialisation a échoué / Initialisation failed
         UE_LOG(LogTemp, Error, TEXT("Libsodium initialization failed!"));
         return;
     }
@@ -551,14 +636,13 @@ TArray<uint8> UThugzBCBPLibrary::HexToBytes(const FString& HexString)
 
 
 //////////////////////////////////IMPORT WALLET SOLANA avec SODIUM////////////////////////////////////////////////////////////////////////////////////////////////
-FString UThugzBCBPLibrary::GetSolanaAddressFromPrivateKey(const FString& PrivateKey, FString& PublicKeyHex)
+void UThugzBCBPLibrary::GetSolanaAddressFromPrivateKey(const FString& PrivateKey, FString& PublicKeyHex, FString& PublicKeyBase58)
 {
     // Assurez-vous que libsodium est initialisé
     static bool bSodiumInitialized = false;
     if (!bSodiumInitialized) {
         if (sodium_init() == -1) {
             UE_LOG(LogTemp, Error, TEXT("Failed to initialize libsodium"));
-            return "";
         }
         bSodiumInitialized = true;
     }
@@ -569,7 +653,6 @@ FString UThugzBCBPLibrary::GetSolanaAddressFromPrivateKey(const FString& Private
     // Vérifier la longueur de la clé privée
     if (PrivateKeyArray.Num() != crypto_sign_SECRETKEYBYTES) {
         UE_LOG(LogTemp, Error, TEXT("Invalid private key length: %d"), PrivateKeyArray.Num());
-        return "";
     }
 
     // Générer la clé publique à partir de la clé privée
@@ -582,10 +665,10 @@ FString UThugzBCBPLibrary::GetSolanaAddressFromPrivateKey(const FString& Private
     // Convertir la clé publique en chaîne de caractères Base58 pour obtenir l'adresse Solana
     TArray<uint8> PublicKeyArray;
     PublicKeyArray.Append(PublicKey, crypto_sign_PUBLICKEYBYTES);
-    FString PublicKeyBase58 = EncodeBase58(PublicKeyArray);
+    PublicKeyBase58 = EncodeBase58(PublicKeyArray);
 
     UE_LOG(LogTemp, Log, TEXT("Public Key (Hex): %s"), *PublicKeyHex);
     UE_LOG(LogTemp, Log, TEXT("Public Key (Base58): %s"), *PublicKeyBase58);
 
-    return PublicKeyBase58;
+    //return PublicKeyBase58;
 }
