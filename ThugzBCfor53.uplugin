@@ -22,6 +22,8 @@
 				"Win64",
 				"Android",
 				"Linux"
+				"MacOS",
+				"IOS"
 			]
 		}
 	]
