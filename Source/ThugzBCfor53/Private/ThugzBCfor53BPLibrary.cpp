@@ -504,6 +504,11 @@ void UThugzBCBPLibrary::HandleHelloMoonAPIResponse(FHttpRequestPtr Request, FHtt
 
 }
 
+void UThugzBCBPLibrary::CopyToClipboard(const FString& TextToCopy)
+{
+    FPlatformApplicationMisc::ClipboardCopy(*TextToCopy);  // Copy the FString to the system clipboard
+}
+
 
 //////////////////////////////////CREATION WALLET SOLANA avec/with SODIUM////////////////////////////////////////////////////////////////////////////////////////////////
 void UThugzBCBPLibrary::GenerateSolanaKeyPair(FString& OutPublicKey, FString& OutPrivateKey)
@@ -522,10 +527,10 @@ void UThugzBCBPLibrary::GenerateSolanaKeyPair(FString& OutPublicKey, FString& Ou
     unsigned char publicKey[crypto_sign_PUBLICKEYBYTES];
     unsigned char privateKey[crypto_sign_SECRETKEYBYTES];
 
-    // Générer une paire de clés
+    // Générer une paire de clés/Generate a key pair
     crypto_sign_keypair(publicKey, privateKey);
 
-    // Convertir les clés en chaînes hexadécimales
+    // Convertir les clés en chaînes hexadécimales/Convert the keys to hexadecimal strings
     OutPublicKey = BytesToHex(publicKey, crypto_sign_PUBLICKEYBYTES);
     OutPrivateKey = BytesToHex(privateKey, crypto_sign_SECRETKEYBYTES);
 }
@@ -638,7 +643,7 @@ TArray<uint8> UThugzBCBPLibrary::HexToBytes(const FString& HexString)
 //////////////////////////////////IMPORT WALLET SOLANA avec SODIUM////////////////////////////////////////////////////////////////////////////////////////////////
 void UThugzBCBPLibrary::GetSolanaAddressFromPrivateKey(const FString& PrivateKey, FString& PublicKeyHex, FString& PublicKeyBase58)
 {
-    // Assurez-vous que libsodium est initialisé
+    // Assurez-vous que libsodium est initialisé/Make sure that libsodium is initialized.
     static bool bSodiumInitialized = false;
     if (!bSodiumInitialized) {
         if (sodium_init() == -1) {
@@ -647,19 +652,19 @@ void UThugzBCBPLibrary::GetSolanaAddressFromPrivateKey(const FString& PrivateKey
         bSodiumInitialized = true;
     }
 
-    // Convertir la clé privée de Base58 à TArray<uint8>
+    // Convertir la clé privée de Base58 à TArray<uint8>/Convert private key from Base58 to TArray<uint8>
     TArray<uint8> PrivateKeyArray = DecodeBase58(PrivateKey);
 
-    // Vérifier la longueur de la clé privée
+    // Vérifier la longueur de la clé privée/Verify the length of the private key
     if (PrivateKeyArray.Num() != crypto_sign_SECRETKEYBYTES) {
         UE_LOG(LogTemp, Error, TEXT("Invalid private key length: %d"), PrivateKeyArray.Num());
     }
 
-    // Générer la clé publique à partir de la clé privée
+    // Générer la clé publique à partir de la clé privée/Generate the public key from the private key
     uint8 PublicKey[crypto_sign_PUBLICKEYBYTES];
     crypto_sign_ed25519_sk_to_pk(PublicKey, PrivateKeyArray.GetData());
 
-    // Convertir la clé publique en chaîne hexadécimale pour vérification
+    // Convertir la clé publique en chaîne hexadécimale pour vérification/Convert the public key to a hexadecimal string for verification
     PublicKeyHex = BytesToHex(PublicKey, crypto_sign_PUBLICKEYBYTES);
 
     // Convertir la clé publique en chaîne de caractères Base58 pour obtenir l'adresse Solana

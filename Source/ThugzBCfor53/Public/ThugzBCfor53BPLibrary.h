@@ -17,6 +17,7 @@
 #include "IImageWrapper.h"
 #include "IImageWrapperModule.h"
 #include "Misc/Paths.h"
+#include "HAL/PlatformApplicationMisc.h" 
 #include "../../ThirdParty/libsodium/include/sodium.h"
 #include "ThugzBCfor53BPLibrary.generated.h"
 
@@ -325,9 +326,12 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
     static void MakeMoralisNFTMetadataRequest(const FString& NFTMintAddress, const FString& APIKey);
     //Requête pour parser la réponse de la fonction: MakeMoralisNFTMetadataRequest / Request to parse the function response: MakeMoralisNFTMetadataRequest
-    UFUNCTION(BlueprintCallable, Category = "JSON Parsing")
+    UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
     static FSolMoralisNFTMetadata ParseNFTMetadataFromJSON(const FString& JsonString);
 
+    //Fonction pour copier dans le presse papier/
+    UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
+    static void CopyToClipboard(const FString& TextToCopy);
 
 
 private:

@@ -23,7 +23,7 @@ public class ThugzBCfor53 : ModuleRules
         PublicDependencyModuleNames.AddRange(
             new string[]
             {
-                "Core", "InputCore", "Json", "JsonUtilities", "HTTP", "Engine", "CoreUObject", "RenderCore", "RHI"
+                "Core", "InputCore", "Json", "JsonUtilities", "HTTP", "Engine", "CoreUObject", "RenderCore", "RHI", "ApplicationCore"
             }
         );
 
@@ -78,6 +78,21 @@ public class ThugzBCfor53 : ModuleRules
 
             PrivateIncludePaths.Add(Path.Combine(ThirdPartyPath, "include"));
         }
+
+        // Add Libsodium for iOS
+        if (Target.Platform == UnrealTargetPlatform.IOS)
+        {
+            string PluginPath = Utils.MakePathRelativeTo(ModuleDirectory, Target.RelativeEnginePath);
+            AdditionalPropertiesForReceipt.Add("IOSPlugin", Path.Combine(PluginPath, "ThugzBCfor53_IOS.xml"));
+
+            string LibPath = Path.Combine(ThirdPartyPath, "lib", "IOS");
+
+            // Ajouter la bibliothèque statique pour iOS
+            PublicAdditionalLibraries.Add(Path.Combine(LibPath, "libsodium-iOS.a"));
+
+            PrivateIncludePaths.Add(Path.Combine(ThirdPartyPath, "include"));
+        }
+
     }
 
     private void CopyFileToOutput(string SourceFilePath, string OutputDir)
