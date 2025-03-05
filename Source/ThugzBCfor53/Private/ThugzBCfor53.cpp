@@ -1,4 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
+// Publisher Name: Thugz Labs
+// 2025
 
 #include "ThugzBCfor53.h"
 
