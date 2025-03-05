@@ -1,3 +1,6 @@
+// Publisher Name: Thugz Labs
+// 2025
+
 using System;
 using System.IO;
 using UnrealBuildTool;
@@ -16,7 +19,7 @@ public class ThugzBCfor53 : ModuleRules
 
         PrivateIncludePaths.AddRange(
             new string[] {
-                // Ajoutez ici d'autres chemins d'inclusion privés requis
+                // Ajoutez ici d'autres chemins d'inclusion privÃ©s requis
             }
         );
 
@@ -48,18 +51,18 @@ public class ThugzBCfor53 : ModuleRules
             PublicIncludePaths.Add(Path.Combine(ThirdPartyPath, "include"));
             PublicAdditionalLibraries.Add(Path.Combine(ThirdPartyPath, "lib", "Win64", "libsodium.lib"));
 
-            // Copier la DLL dans les répertoires de sortie appropriés
+            // Copier la DLL dans les rÃ©pertoires de sortie appropriÃ©s
             string PluginBinariesDir = Path.Combine(ModuleDirectory, "../../Binaries/Win64");
             string ProjectBinariesDir = Path.Combine(Target.ProjectFile.Directory.ToString(), "Binaries/Win64");
             string DllPath = Path.Combine(ThirdPartyPath, "lib", "Win64", "libsodium.dll");
 
-            // Copier dans le répertoire de sortie du plugin
+            // Copier dans le rÃ©pertoire de sortie du plugin
             CopyFileToOutput(DllPath, PluginBinariesDir);
 
-            // Copier dans le répertoire de sortie du projet
+            // Copier dans le rÃ©pertoire de sortie du projet
             CopyFileToOutput(DllPath, ProjectBinariesDir);
 
-            // Ajouter la DLL aux dépendances runtime
+            // Ajouter la DLL aux dÃ©pendances runtime
             RuntimeDependencies.Add(Path.Combine(PluginBinariesDir, "libsodium.dll"));
             RuntimeDependencies.Add(Path.Combine(ProjectBinariesDir, "libsodium.dll"));
         }
@@ -70,7 +73,7 @@ public class ThugzBCfor53 : ModuleRules
 
             string LibPath = Path.Combine(ThirdPartyPath, "lib", "Android");
 
-            // Ajoutez les bibliothèques appropriées pour Android
+            // Ajoutez les bibliothÃ¨ques appropriÃ©es pour Android
             PublicAdditionalLibraries.Add(Path.Combine(LibPath, "armeabi-v7a", "libsodium.so"));
             PublicAdditionalLibraries.Add(Path.Combine(LibPath, "arm64-v8a", "libsodium.so"));
             PublicAdditionalLibraries.Add(Path.Combine(LibPath, "x86", "libsodium.so"));
@@ -87,7 +90,7 @@ public class ThugzBCfor53 : ModuleRules
 
             string LibPath = Path.Combine(ThirdPartyPath, "lib", "IOS");
 
-            // Ajouter la bibliothèque statique pour iOS
+            // Ajouter la bibliothÃ¨que statique pour iOS
             PublicAdditionalLibraries.Add(Path.Combine(LibPath, "libsodium-iOS.a"));
 
             PrivateIncludePaths.Add(Path.Combine(ThirdPartyPath, "include"));
