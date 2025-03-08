@@ -1,4 +1,16 @@
-// Created in 2024. Copyright Thugz Labs SAS, all rights reserved.
+// Copyright (c) 2025 Thugz Labs
+// All Rights Reserved.
+//
+// This software is provided "as-is," without any express or implied warranty.
+// In no event shall the authors or copyright holders be held liable for any damages 
+// arising from the use of this software.
+//
+// You are permitted to use, modify, and distribute this software under the terms 
+// of the license specified in the LICENSE file included with this repository.
+//
+// Publisher: Thugz Labs
+// Year of Publication: 2025
+
 
 #include "ThugzBCfor53BPLibrary.h"
 #include "Engine/Texture2D.h"
@@ -14,7 +26,7 @@ FString UThugzBCBPLibrary::LastTokenBalance = FString("");
 
 /////////////////////////////////////////////////////////////HELLOMOON//////////////////////////////////////////////////////////////////////////////
 
-// This request use the HelloMoon API to retrieve the NFTs owned by the Account. Barear is the hellomoon barear / Cette requête utilise l'API de HelloMoon pour récupérer les NFT appartenant au compte. Barear est le barear de hellomoon
+// This request use the HelloMoon API to retrieve the NFTs owned by the Account. Barear is the hellomoon barear / Cette requÃªte utilise l'API de HelloMoon pour rÃ©cupÃ©rer les NFT appartenant au compte. Barear est le barear de hellomoon
 void UThugzBCBPLibrary::MakeHelloMoonAPIRequest(const FString& Account, const FString& Barear)
 {
     FString HelloMoonURL = TEXT("https://rest-api.hellomoon.io/v0/nft/mints-by-owner"); // It is the mint-by-owner method from the HelloMoon API
@@ -35,7 +47,7 @@ void UThugzBCBPLibrary::MakeHelloMoonAPIRequest(const FString& Account, const FS
     HttpRequest->ProcessRequest();
 }
 
-//Requete pour récupérer l'URI de hellomoon / This request retrieve the URI from the NFT metadata
+//Requete pour rÃ©cupÃ©rer l'URI de hellomoon / This request retrieve the URI from the NFT metadata
 void UThugzBCBPLibrary::MakeURIRequest(const FString& URL)
 {
     TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
@@ -45,7 +57,7 @@ void UThugzBCBPLibrary::MakeURIRequest(const FString& URL)
     Request->SetHeader("Content-Type", "application/json");
     Request->ProcessRequest();
 }
-//This request retrieve the URL of the NFT image / Cette requête permet de récupérer l'URL de l'image NFT
+//This request retrieve the URL of the NFT image / Cette requÃªte permet de rÃ©cupÃ©rer l'URL de l'image NFT
 bool UThugzBCBPLibrary::ParseImageURL(const FString& JsonString, FString& OutImageURL)
 {
     LastJsonResponse = JsonString; // Store the raw JSON response
@@ -72,7 +84,7 @@ bool UThugzBCBPLibrary::ParseImageURL(const FString& JsonString, FString& OutIma
 
     return false;
 }
-//Récuperation de l'image et creation de la texture depuis l'URL obtenu par ParseImageURL / Retrieve the image and create the texture from the URL obtained by ParseImageURL
+//RÃ©cuperation de l'image et creation de la texture depuis l'URL obtenu par ParseImageURL / Retrieve the image and create the texture from the URL obtained by ParseImageURL
 void UThugzBCBPLibrary::DownloadImageAndCreateTexture(const FString& URL, UTexture2D*& OutTexture)
 {
     TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
@@ -166,14 +178,14 @@ FRootJson UThugzBCBPLibrary::ConvertSOLJSONtoStruct(FString JsonString)
             NFTData.OwnerAccount = DataObject->GetStringField("ownerAccount");
             NFTData.MetadataAddress = DataObject->GetStringField("metadataAddress");
 
-            // Désérialiser MetadataJson
+            // DÃ©sÃ©rialiser MetadataJson
             TSharedPtr<FJsonObject> MetadataJsonObject = DataObject->GetObjectField("metadataJson");
             NFTData.MetadataJson.Name = MetadataJsonObject->GetStringField("name");
             NFTData.MetadataJson.Symbol = MetadataJsonObject->GetStringField("symbol");
             NFTData.MetadataJson.Uri = MetadataJsonObject->GetStringField("uri");
             NFTData.MetadataJson.SellerFeeBasisPoints = MetadataJsonObject->GetNumberField("sellerFeeBasisPoints");
-            // Répéter pour d'autres champs
-            // Désérialiser le tableau des créateurs
+            // RÃ©pÃ©ter pour d'autres champs
+            // DÃ©sÃ©rialiser le tableau des crÃ©ateurs
             TArray<TSharedPtr<FJsonValue>> CreatorsArray = MetadataJsonObject->GetArrayField("creators");
             for (int32 j = 0; j < CreatorsArray.Num(); j++)
             {
@@ -187,7 +199,7 @@ FRootJson UThugzBCBPLibrary::ConvertSOLJSONtoStruct(FString JsonString)
                 NFTData.MetadataJson.Creators.Add(Creator);
             }
 
-            // Ajouter l'objet NFTData à la structure racine
+            // Ajouter l'objet NFTData Ã  la structure racine
             RootStruct.Data.Add(NFTData);
         }
     }
@@ -195,7 +207,7 @@ FRootJson UThugzBCBPLibrary::ConvertSOLJSONtoStruct(FString JsonString)
 }
 
 
-//récupération de la Balance Solana avec Hellomoon / recovery of the Solana Scale with Hellomoon
+//rÃ©cupÃ©ration de la Balance Solana avec Hellomoon / recovery of the Solana Scale with Hellomoon
 
 void UThugzBCBPLibrary::HelloMoonRequestForTokenBalance(const FString& Param, const FString& ApiKey, FString& OutResponse)
 {
@@ -238,7 +250,7 @@ void UThugzBCBPLibrary::HelloMoonRequestForTokenBalance(const FString& Param, co
     HttpRequest->ProcessRequest();
 }
 
-//Requête récuperant la repons eJSON de getbalance d'HelloMoon pour la mettre dans un double en sortie / Request to retrieve HelloMoon's getbalance eJSON response and put it in an output double
+//RequÃªte rÃ©cuperant la repons eJSON de getbalance d'HelloMoon pour la mettre dans un double en sortie / Request to retrieve HelloMoon's getbalance eJSON response and put it in an output double
 void UThugzBCBPLibrary::GetTokenBamanceFromJsonHelloMoon(const FString& JsonString, double& OutValue)
 {
     TSharedPtr<FJsonObject> JsonObject;
@@ -250,7 +262,7 @@ void UThugzBCBPLibrary::GetTokenBamanceFromJsonHelloMoon(const FString& JsonStri
         const TSharedPtr<FJsonObject>* ResultObject;
         if (JsonObject->TryGetObjectField(TEXT("result"), ResultObject))
         {
-            // Extraction et affectation de la valeur à OutValue
+            // Extraction et affectation de la valeur Ã  OutValue
             OutValue = (*ResultObject)->GetNumberField(TEXT("value")) / 1000000000.0;
         }
     }
@@ -260,7 +272,7 @@ void UThugzBCBPLibrary::GetTokenBamanceFromJsonHelloMoon(const FString& JsonStri
 
 ////////////////////////////////////////////////////////MORALIS//////////////////////////////////////////////////////////////////////////////////////
                                                 // EVM BLOCKCHAIN//
-// requête pour Moralis API
+// requÃªte pour Moralis API
 void UThugzBCBPLibrary::MoralisAPIRequest(const FString& AccountAddress, const FString& ApiKey, const FString& Blockchain) {
 
     FString Url = FString::Printf(TEXT("https://deep-index.moralis.io/api/v2/%s/nft?chain=%s&format=decimal"), *AccountAddress, *Blockchain);
@@ -338,7 +350,7 @@ FEVMFNFTResponse UThugzBCBPLibrary::ConvertEVMJSONtoStruct(FString JsonString)
     return NFTResponse;
 }
 // SOLANA BLOCKCHAIN//
-// Récupération du JSON de la balance Solana avec MORALIS /  Retrieving JSON from Solana scales with MORALIS
+// RÃ©cupÃ©ration du JSON de la balance Solana avec MORALIS /  Retrieving JSON from Solana scales with MORALIS
 void UThugzBCBPLibrary::MakeMoraliseRequestForSOLBalance(const FString& Pkey, const FString& ApiKey, FString& OutResponse)
 {
     FString Url = FString::Printf(TEXT("https://solana-gateway.moralis.io/account/mainnet/%s/balance"), *Pkey);
@@ -363,7 +375,7 @@ void UThugzBCBPLibrary::MakeMoraliseRequestForSOLBalance(const FString& Pkey, co
     Request->ProcessRequest();
 }
 
-//Requête récuperant la reponse JSON de la requête balance solana MORALIS pour la mettre dans un double en sortie / Query that retrieves the JSON response from the MORALIS  Solana balance query and puts it in a duplicate output file
+//RequÃªte rÃ©cuperant la reponse JSON de la requÃªte balance solana MORALIS pour la mettre dans un double en sortie / Query that retrieves the JSON response from the MORALIS  Solana balance query and puts it in a duplicate output file
 void UThugzBCBPLibrary::GetTokenBamanceFromJsonMoralis(const FString& JsonString, double& OutSolanaValue)
 {
     TSharedPtr<FJsonObject> JsonObject;
@@ -379,7 +391,7 @@ void UThugzBCBPLibrary::GetTokenBamanceFromJsonMoralis(const FString& JsonString
     }
 }
 
-//Requête récupérant les NFT possédés d'un Wallet SOLANA dans un JSON / Request to retrieve the NFTs owned by a SOLANA Wallet in a JSON
+//RequÃªte rÃ©cupÃ©rant les NFT possÃ©dÃ©s d'un Wallet SOLANA dans un JSON / Request to retrieve the NFTs owned by a SOLANA Wallet in a JSON
 void UThugzBCBPLibrary::MakeMoralisAPIRequest(const FString& OwnerAccount, const FString& APIKey)
 {
     FString MoralisURL = FString::Printf(TEXT("https://solana-gateway.moralis.io/account/mainnet/%s/nft"), *OwnerAccount);
@@ -395,7 +407,7 @@ void UThugzBCBPLibrary::MakeMoralisAPIRequest(const FString& OwnerAccount, const
 
     HttpRequest->ProcessRequest();
 }
-//Parsing de la réponse JSON de la requête MakeMoralisAPIRequest dans une strcture adaptée / Parsing the JSON response to the MakeMoralisAPIRequest request into an adapted structure
+//Parsing de la rÃ©ponse JSON de la requÃªte MakeMoralisAPIRequest dans une strcture adaptÃ©e / Parsing the JSON response to the MakeMoralisAPIRequest request into an adapted structure
 TArray<FThugzNFTData> UThugzBCBPLibrary::ParseNFTDataFromMoralisJSON(const FString& JsonString)
 {
     TArray<FThugzNFTData> NFTDataArray;
@@ -423,7 +435,7 @@ TArray<FThugzNFTData> UThugzBCBPLibrary::ParseNFTDataFromMoralisJSON(const FStri
 
     return NFTDataArray;
 }
-//Requête récuperant les Metaddata d'un NFT donné / Request to retrieve Metaddata for a given NFT
+//RequÃªte rÃ©cuperant les Metaddata d'un NFT donnÃ© / Request to retrieve Metaddata for a given NFT
 void UThugzBCBPLibrary::MakeMoralisNFTMetadataRequest(const FString& NFTMintAddress, const FString& APIKey)
 {
     FString MoralisURL = FString::Printf(TEXT("https://solana-gateway.moralis.io/nft/mainnet/%s/metadata"), *NFTMintAddress);
@@ -441,7 +453,7 @@ void UThugzBCBPLibrary::MakeMoralisNFTMetadataRequest(const FString& NFTMintAddr
     // Send the request
     HttpRequest->ProcessRequest();
 }
-//Parsing de la réponse JSON de la requête MakeMoralisNFTMetadataRequest dans une strcture adaptée / Parsing the JSON response to the MakeMoralisNFTMetadataRequest into a suitable structure
+//Parsing de la rÃ©ponse JSON de la requÃªte MakeMoralisNFTMetadataRequest dans une strcture adaptÃ©e / Parsing the JSON response to the MakeMoralisNFTMetadataRequest into a suitable structure
 FSolMoralisNFTMetadata UThugzBCBPLibrary::ParseNFTMetadataFromJSON(const FString& JsonString)
 {
     FSolMoralisNFTMetadata NFTMetadata;
@@ -470,7 +482,7 @@ FSolMoralisNFTMetadata UThugzBCBPLibrary::ParseNFTMetadataFromJSON(const FString
 
 ////////////////////////////////////////////////////////////////TRANSVERSE/////////////////////////////////////////////////////////////////////////////////
 
-//requête récupéant la réponse de n'importe quel API pour la mettre dans un FSTRING à parser / request to retrieve the response from any API and put it in a FSTRING to be parsed
+//requÃªte rÃ©cupÃ©ant la rÃ©ponse de n'importe quel API pour la mettre dans un FSTRING Ã  parser / request to retrieve the response from any API and put it in a FSTRING to be parsed
 FString UThugzBCBPLibrary::GetLastJsonResponse()
 {
     return LastJsonResponse;
@@ -480,26 +492,26 @@ FString UThugzBCBPLibrary::GetLastTokenJsonResponse()
 {
     return LastTokenBalance;
 }
-// Traitement de la requête pour les API NFT (HelloMoon ou Moralis) / Request processing for NFT APIs (HelloMoon or Moralis)
+// Traitement de la requÃªte pour les API NFT (HelloMoon ou Moralis) / Request processing for NFT APIs (HelloMoon or Moralis)
 void UThugzBCBPLibrary::HandleHelloMoonAPIResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
-    //LastJsonResponse = FString(""); //On commence par vider la dernière réponse eventuelle / Start by clearing the last possible answer
+    //LastJsonResponse = FString(""); //On commence par vider la derniÃ¨re rÃ©ponse eventuelle / Start by clearing the last possible answer
     if (!bWasSuccessful)
     {
-        LastJsonResponse = FString(""); // Réinitialisez la réponse JSON en cas d'erreur / Reset the JSON response in the event of an error
+        LastJsonResponse = FString(""); // RÃ©initialisez la rÃ©ponse JSON en cas d'erreur / Reset the JSON response in the event of an error
         return;
     }
 
     if (Response.IsValid() && Response->GetResponseCode() == 200)
     {
         FString JsonResponse = Response->GetContentAsString();
-        LastJsonResponse = JsonResponse; // Stockez la réponse JSON / Store the JSON response
+        LastJsonResponse = JsonResponse; // Stockez la rÃ©ponse JSON / Store the JSON response
 
     }
     else
     {
-        // Gestion de l'erreur de réponse HTTP / HTTP response error handling
-        LastJsonResponse = FString("ERREUR"); // Réinitialisez la réponse JSON en cas d'erreur / Reset the JSON response in the event of an error
+        // Gestion de l'erreur de rÃ©ponse HTTP / HTTP response error handling
+        LastJsonResponse = FString("ERREUR"); // RÃ©initialisez la rÃ©ponse JSON en cas d'erreur / Reset the JSON response in the event of an error
     }
 
 }
@@ -515,7 +527,7 @@ void UThugzBCBPLibrary::GenerateSolanaKeyPair(FString& OutPublicKey, FString& Ou
 {
     if (sodium_init() < 0)
     {
-        // L'initialisation a échoué / Initialisation failed
+        // L'initialisation a Ã©chouÃ© / Initialisation failed
         UE_LOG(LogTemp, Error, TEXT("Libsodium initialization failed!"));
         return;
     }
@@ -527,10 +539,10 @@ void UThugzBCBPLibrary::GenerateSolanaKeyPair(FString& OutPublicKey, FString& Ou
     unsigned char publicKey[crypto_sign_PUBLICKEYBYTES];
     unsigned char privateKey[crypto_sign_SECRETKEYBYTES];
 
-    // Générer une paire de clés/Generate a key pair
+    // GÃ©nÃ©rer une paire de clÃ©s/Generate a key pair
     crypto_sign_keypair(publicKey, privateKey);
 
-    // Convertir les clés en chaînes hexadécimales/Convert the keys to hexadecimal strings
+    // Convertir les clÃ©s en chaÃ®nes hexadÃ©cimales/Convert the keys to hexadecimal strings
     OutPublicKey = BytesToHex(publicKey, crypto_sign_PUBLICKEYBYTES);
     OutPrivateKey = BytesToHex(privateKey, crypto_sign_SECRETKEYBYTES);
 }
@@ -643,7 +655,7 @@ TArray<uint8> UThugzBCBPLibrary::HexToBytes(const FString& HexString)
 //////////////////////////////////IMPORT WALLET SOLANA avec SODIUM////////////////////////////////////////////////////////////////////////////////////////////////
 void UThugzBCBPLibrary::GetSolanaAddressFromPrivateKey(const FString& PrivateKey, FString& PublicKeyHex, FString& PublicKeyBase58)
 {
-    // Assurez-vous que libsodium est initialisé/Make sure that libsodium is initialized.
+    // Assurez-vous que libsodium est initialisÃ©/Make sure that libsodium is initialized.
     static bool bSodiumInitialized = false;
     if (!bSodiumInitialized) {
         if (sodium_init() == -1) {
@@ -652,22 +664,22 @@ void UThugzBCBPLibrary::GetSolanaAddressFromPrivateKey(const FString& PrivateKey
         bSodiumInitialized = true;
     }
 
-    // Convertir la clé privée de Base58 à TArray<uint8>/Convert private key from Base58 to TArray<uint8>
+    // Convertir la clÃ© privÃ©e de Base58 Ã  TArray<uint8>/Convert private key from Base58 to TArray<uint8>
     TArray<uint8> PrivateKeyArray = DecodeBase58(PrivateKey);
 
-    // Vérifier la longueur de la clé privée/Verify the length of the private key
+    // VÃ©rifier la longueur de la clÃ© privÃ©e/Verify the length of the private key
     if (PrivateKeyArray.Num() != crypto_sign_SECRETKEYBYTES) {
         UE_LOG(LogTemp, Error, TEXT("Invalid private key length: %d"), PrivateKeyArray.Num());
     }
 
-    // Générer la clé publique à partir de la clé privée/Generate the public key from the private key
+    // GÃ©nÃ©rer la clÃ© publique Ã  partir de la clÃ© privÃ©e/Generate the public key from the private key
     uint8 PublicKey[crypto_sign_PUBLICKEYBYTES];
     crypto_sign_ed25519_sk_to_pk(PublicKey, PrivateKeyArray.GetData());
 
-    // Convertir la clé publique en chaîne hexadécimale pour vérification/Convert the public key to a hexadecimal string for verification
+    // Convertir la clÃ© publique en chaÃ®ne hexadÃ©cimale pour vÃ©rification/Convert the public key to a hexadecimal string for verification
     PublicKeyHex = BytesToHex(PublicKey, crypto_sign_PUBLICKEYBYTES);
 
-    // Convertir la clé publique en chaîne de caractères Base58 pour obtenir l'adresse Solana
+    // Convertir la clÃ© publique en chaÃ®ne de caractÃ¨res Base58 pour obtenir l'adresse Solana
     TArray<uint8> PublicKeyArray;
     PublicKeyArray.Append(PublicKey, crypto_sign_PUBLICKEYBYTES);
     PublicKeyBase58 = EncodeBase58(PublicKeyArray);
