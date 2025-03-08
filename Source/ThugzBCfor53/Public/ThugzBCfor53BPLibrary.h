@@ -1,4 +1,16 @@
-// Created in 2024. Copyright Thugz Labs SAS, all rights reserved.
+// Copyright (c) 2025 Thugz Labs
+// All Rights Reserved.
+//
+// This software is provided "as-is," without any express or implied warranty.
+// In no event shall the authors or copyright holders be held liable for any damages 
+// arising from the use of this software.
+//
+// You are permitted to use, modify, and distribute this software under the terms 
+// of the license specified in the LICENSE file included with this repository.
+//
+// Publisher: Thugz Labs
+// Year of Publication: 2025
+
 
 #pragma once
 #include "CoreMinimal.h"
@@ -23,7 +35,7 @@
 
 class FJsonObject;
 
-// Définition des structures UE qui acceuilleront les réponses JSON
+// DÃ©finition des structures UE qui acceuilleront les rÃ©ponses JSON
 
 //////////////////STRUCTURE POUR SOLANA HELLOMOON/////////////////////////////////
 
@@ -254,7 +266,7 @@ struct FSolMoralisNFTMetadata
 
 
 
-// Définition des fonctions pour exposition au Blueprint / Defining functions for Blueprint exposure
+// DÃ©finition des fonctions pour exposition au Blueprint / Defining functions for Blueprint exposure
 UCLASS()
 class UThugzBCBPLibrary : public UBlueprintFunctionLibrary
 {
@@ -300,7 +312,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
     static void DownloadImageAndCreateTexture(const FString& URL, UTexture2D*& OutTexture);
 
-    // Ajout de la fonction pour générer une paire de clés Solana / Addition of the function for generating a pair of Solana keys
+    // Ajout de la fonction pour gÃ©nÃ©rer une paire de clÃ©s Solana / Addition of the function for generating a pair of Solana keys
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
     static void GenerateSolanaKeyPair(FString& OutPublicKey, FString& OutPrivateKey);
 
@@ -312,20 +324,20 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
     static TArray<uint8> HexToBytes(const FString& HexString);
 
-    //Récuperation de l'adresse publique SOlana depuis la clé privée / Retrieving the SOlana public address from the private key
+    //RÃ©cuperation de l'adresse publique SOlana depuis la clÃ© privÃ©e / Retrieving the SOlana public address from the private key
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
     static void GetSolanaAddressFromPrivateKey(const FString& PrivateKey, FString& PublicKeyHex, FString& PublicKeyBase58);
 
-    //Requête Moralis pour récupérer les NFTs d'un wallet / Moralis request to retrieve NFTs from a wallet
+    //RequÃªte Moralis pour rÃ©cupÃ©rer les NFTs d'un wallet / Moralis request to retrieve NFTs from a wallet
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
     static void MakeMoralisAPIRequest(const FString& OwnerAccount, const FString& APIKey);
-    //Parsing de la réponse de la requête Moralis / Parsing the response to the Moralis request
+    //Parsing de la rÃ©ponse de la requÃªte Moralis / Parsing the response to the Moralis request
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
     static TArray<FThugzNFTData> ParseNFTDataFromMoralisJSON(const FString& JsonString);
-    //Requête pour récuperer les metadata d'un NFT par Moralis / Request to retrieve the metadata of an NFT by Moralis
+    //RequÃªte pour rÃ©cuperer les metadata d'un NFT par Moralis / Request to retrieve the metadata of an NFT by Moralis
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
     static void MakeMoralisNFTMetadataRequest(const FString& NFTMintAddress, const FString& APIKey);
-    //Requête pour parser la réponse de la fonction: MakeMoralisNFTMetadataRequest / Request to parse the function response: MakeMoralisNFTMetadataRequest
+    //RequÃªte pour parser la rÃ©ponse de la fonction: MakeMoralisNFTMetadataRequest / Request to parse the function response: MakeMoralisNFTMetadataRequest
     UFUNCTION(BlueprintCallable, Category = "Web3 Thugz Labs Plugin")
     static FSolMoralisNFTMetadata ParseNFTMetadataFromJSON(const FString& JsonString);
 
